@@ -86,5 +86,24 @@ ON p.cpf_paciente = pac.cpf
 INNER JOIN medico m ON p.codigo_medico = m.codigo 
 WHERE pac.nome = 'José Rubens'
 ----------------------------------------------------------------------------------------------------------------------
+--CPF (Com a máscara XXX.XXX.XXX-XX), Nome, Endereço completo (Rua, nº - Bairro), Telefone (Caso nulo, mostrar um traço (-)) dos pacientes do médico Vinicius
 
+SELECT p.nome+ ' '+ SUBSTRING (p.cpf,1,3) + '.' + SUBSTRING(p.cpf,4,3) + '.' + SUBSTRING(p.cpf,7,3) + '.' + SUBSTRING(p.cpf,10,2)+ ''+
+CONCAT(p.rua, p.numero, p.bairro) +''+
+CASE
+      WHEN LEN(p.telefone) IS NULL THEN  '(-)'
+        ELSE p.telefone
+    END AS 'Endereço do paciente'
+FROM MEDICO m    inner join PRONTUARIO pro 
+on m.codigo =   pro.codigo_medico
+inner join PACIENTES p
+on p.cpf = pro.cpf_paciente
+WHERE m.nome like '%Vinicius%'
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--Quantos dias fazem da consulta de Maria Rita até hoje
+select DATEDIFF(Day, paci.data, GETDATE()) as 'Quantos dias fazem da consulta'
+from prontuario paci join pacientes p
+on paci.cpf_paciente= p.cpf
+where  p.nome like '%maria%'
 
